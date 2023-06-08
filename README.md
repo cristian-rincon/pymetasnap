@@ -23,18 +23,18 @@ Usage
 To extract metadata for Python packages from PyPI, use the following command:
 
 ```bash
-cli-pypi-metadata-extractor --packages <package1> <package2> ... --output <output_path> --format <output_format>
+cli-pypi-metadata-extractor --source-path <path_of_the_txt_file> --output <output_path> --format <output_format>
 ```
 
 Replace the following placeholders in the command:
 
-`<package1>`, `<package2>`, ...: Names of the packages to retrieve metadata for (separated by spaces).
+`<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
 `<output_path>`: Path to store the extracted metadata file.
 `<input_format>`: Format of the input file (csv or xlsx).
 Example usage:
 
 ```bash
-cli-pypi-metadata-extractor --packages requests numpy pandas --output metadata.csv --format csv
+cli-pypi-metadata-extractor --source-path ./requirements.txt --output metadata.csv --format csv
 ```
 
 ## Output
