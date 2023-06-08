@@ -34,5 +34,5 @@ def main(
     generate_data(source_path, output, format)
 
 
-if __name__ == "__main__":
-    app()
+# if __name__ == "__main__":
+#     app()
