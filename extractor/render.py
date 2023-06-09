@@ -1,4 +1,6 @@
 from typing import List, Tuple
+from loguru import logger
+import re
 
 
 class Requirements:
@@ -38,9 +40,9 @@ class Requirements:
             A list of tuples containing package names and versions.
         """
         lines = data.strip().split("\n")
-        package_data = [line.split("==") for line in lines]
-
-        return [(package[0], package[1]) for package in package_data]
+        pattern = r"(==|<=|>=|<|>)"
+        package_data = [re.split(pattern, line) for line in lines ]
+        return [(package[0], package[2]) if len(package) > 1  else package for package in package_data]
 
     def _from_pip_list(self, data: str) -> List[Tuple[str, str]]:
         """
@@ -56,9 +58,7 @@ class Requirements:
         package_data = [tuple(line.split()) for line in lines[2:]]
         return [(package[0], package[1]) for package in package_data]
 
-    def render(
-        self, source_path: str, format: str
-    ) -> List[Tuple[str, str]]:
+    def render(self, source_path: str, format: str) -> List[Tuple[str, str]]:
         """
         Render the requirements data based on the specified format.
 
