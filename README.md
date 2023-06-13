@@ -19,7 +19,10 @@ You can install pymetasnap using pip:
 pip install pymetasnap
 ```
 
-Usage
+### Usage
+
+#### Detached mode
+
 To extract metadata for Python packages from PyPI, use the following command:
 
 ```bash
@@ -28,14 +31,20 @@ pymetasnap --source-path <path_of_the_txt_file> --output <output_path> --format 
 
 Replace the following placeholders in the command:
 
-`<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
-`<output_path>`: Path to store the extracted metadata file.
-`<input_format>`: Format of the input file (csv or xlsx).
+- `<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
+- `<output_path>`: Path to store the extracted metadata file.
+- `<input_format>`: Format of the input file (csv or xlsx).
 Example usage:
 
 ```bash
 pymetasnap --source-path ./requirements.txt --output metadata.csv --format csv
 ```
+
+#### Interactive mode
+
+Additionally, an interactive mode is available, allowing you to provide the required values through user prompts as follows:
+
+[![asciicast](https://asciinema.org/a/4xs1k6elJ40kJ4YhKxuS93Rfh.svg)](https://asciinema.org/a/4xs1k6elJ40kJ4YhKxuS93Rfh)
 
 ## Output
 
