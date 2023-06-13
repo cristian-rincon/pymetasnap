@@ -1,5 +1,6 @@
-from typing import Dict
 from pathlib import Path
+from typing import Dict
+
 import pandas as pd
 import requests
 from loguru import logger
@@ -50,7 +51,7 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
         "project_url": raw_data["project_url"],
         "version_url": f"{raw_data['project_url']}{version}/"
         if version
-        else raw_data['release_url'],
+        else raw_data["release_url"],
     }
 
 
@@ -71,7 +72,9 @@ def generate_data(source_path: Path, output: Path, format: str) -> None:
     result = Requirements().render(source_path, format)
     pkgs_raw_metadata = []
     for pkg in track(result, description="Processing..."):
-        filtered_data = filter_data(get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None)
+        filtered_data = filter_data(
+            get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None
+        )
         pkgs_raw_metadata.append(filtered_data)
     df = pd.DataFrame(pkgs_raw_metadata)
     print(f"Storing into: {output}")

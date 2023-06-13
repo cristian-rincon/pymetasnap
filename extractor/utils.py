@@ -1,9 +1,18 @@
 import pandas as pd
+import toml
 from loguru import logger
-from rich.progress import track
 from rich import print
+from rich.progress import track
+
 from extractor.core import filter_data, get_raw_data
 from extractor.render import Requirements
+
+
+def get_version_from_pyproject():
+    with open("pyproject.toml") as f:
+        pyproject_data = toml.load(f)
+        version = pyproject_data.get("tool", {}).get("poetry", {}).get("version")
+    return version
 
 
 def filter_requirements(requirements_file_data, installed_requirements_data):
@@ -34,10 +43,8 @@ def get_filtered_metadata(requirements_file, installed_requirements, output):
         logger.error("Not supported format.")
 
 
-
 if __name__ == "__main__":
-
     requirements_file = "./local/all.txt"
     installed_requirements = "./local/installed.txt"
     output = "./local/ece/metadata.xlsx"
-    get_filtered_metadata(requirements_file,installed_requirements,output)
+    get_filtered_metadata(requirements_file, installed_requirements, output)

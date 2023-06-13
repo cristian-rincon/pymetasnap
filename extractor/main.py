@@ -5,6 +5,7 @@ import typer
 from typing_extensions import Annotated
 
 from extractor.core import generate_data
+from extractor.utils import get_version_from_pyproject
 
 app = typer.Typer()
 
@@ -12,6 +13,11 @@ app = typer.Typer()
 class RequirementsFormat(str, Enum):
     pip_list = "pip_list"
     pip_freeze = "pip_freeze"
+
+
+@app.command(name="version")
+def version():
+    return print(get_version_from_pyproject())
 
 
 @app.command()

@@ -1,6 +1,7 @@
-from typing import List, Tuple
-from loguru import logger
 import re
+from typing import List, Tuple
+
+from loguru import logger
 
 
 class Requirements:
@@ -41,8 +42,11 @@ class Requirements:
         """
         lines = data.strip().split("\n")
         pattern = r"(==|<=|>=|<|>)"
-        package_data = [re.split(pattern, line) for line in lines ]
-        return [(package[0], package[2]) if len(package) > 1  else package for package in package_data]
+        package_data = [re.split(pattern, line) for line in lines]
+        return [
+            (package[0], package[2]) if len(package) > 1 else package
+            for package in package_data
+        ]
 
     def _from_pip_list(self, data: str) -> List[Tuple[str, str]]:
         """
