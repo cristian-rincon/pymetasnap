@@ -1,4 +1,5 @@
 from enum import Enum
+from pathlib import Path
 
 import typer
 from typing_extensions import Annotated
@@ -16,23 +17,36 @@ class RequirementsFormat(str, Enum):
 @app.command()
 def main(
     source_path: Annotated[
-        str, typer.Option(prompt=True, help="Requirements file path")
+        Path,
+        typer.Option(
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            writable=False,
+            readable=True,
+            resolve_path=True,
+            prompt=True,
+            help="Requirements file path",
+        ),
     ] = "",
     output: Annotated[
-        str, typer.Option(prompt=True, help="Path to store the data")
+        Path,
+        typer.Option(
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+            prompt=True,
+            help="Path to store the data",
+        ),
     ] = "",
     format: Annotated[
         RequirementsFormat,
         typer.Option(prompt=True, help="Incoming requirements format."),
     ] = RequirementsFormat.pip_freeze,
 ):
-    # empty_arg = ""
-    # if source_path == empty_arg:
-    #     source_path = typer.prompt("Source path")
-    # if output == empty_arg:
-    #     output = typer.prompt("Output path")
     generate_data(source_path, output, format)
 
 
-# if __name__ == "__main__":
-#     app()
+if __name__ == "__main__":
+    app()

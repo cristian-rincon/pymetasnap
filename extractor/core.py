@@ -1,5 +1,5 @@
 from typing import Dict
-
+from pathlib import Path
 import pandas as pd
 import requests
 from loguru import logger
@@ -44,15 +44,17 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     """
     return {
         "name": raw_data["name"],
-        "version": raw_data["version"],
+        "version": version or raw_data["version"],
         "license": raw_data["license"],
         "repository": raw_data["home_page"],
         "project_url": raw_data["project_url"],
-        "version_url": f"{raw_data['project_url']}{version}/",
+        "version_url": f"{raw_data['project_url']}{version}/"
+        if version
+        else raw_data['release_url'],
     }
 
 
-def generate_data(source_path: str, output: str, format: str) -> None:
+def generate_data(source_path: Path, output: Path, format: str) -> None:
     """
     Generate data based on the specified requirements format.
 
@@ -69,13 +71,13 @@ def generate_data(source_path: str, output: str, format: str) -> None:
     result = Requirements().render(source_path, format)
     pkgs_raw_metadata = []
     for pkg in track(result, description="Processing..."):
-        filtered_data = filter_data(get_raw_data(pkg[0]), pkg[1])
+        filtered_data = filter_data(get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None)
         pkgs_raw_metadata.append(filtered_data)
     df = pd.DataFrame(pkgs_raw_metadata)
     print(f"Storing into: {output}")
-    if output.endswith(".csv"):
+    if str(output).endswith(".csv"):
         df.to_csv(output, index=False)
-    elif output.endswith(".xlsx"):
+    elif str(output).endswith(".xlsx"):
         df.to_excel(output, index=False)
     else:
         logger.error("Not supported format.")
