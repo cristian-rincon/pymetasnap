@@ -11,13 +11,17 @@ from extractor.render import Requirements
 def get_version_from_pyproject():
     with open("pyproject.toml") as f:
         pyproject_data = toml.load(f)
-        version = pyproject_data.get("tool", {}).get("poetry", {}).get("version")
+        version = (
+            pyproject_data.get("tool", {}).get("poetry", {}).get("version")
+        )  # noqa
     return version
 
 
 def filter_requirements(requirements_file_data, installed_requirements_data):
     base_reqs = [req[0] for req in requirements_file_data]
-    return [ireq for ireq in installed_requirements_data if ireq[0] in base_reqs]
+    return [
+        ireq for ireq in installed_requirements_data if ireq[0] in base_reqs
+    ]  # noqa
 
 
 def get_filtered_metadata(requirements_file, installed_requirements, output):
@@ -25,9 +29,13 @@ def get_filtered_metadata(requirements_file, installed_requirements, output):
     print("Getting requirements list...")
     requirements_file_data = handler.render(requirements_file, "pip_freeze")
     print("Getting installed libraries list...")
-    installed_requirements_data = handler.render(installed_requirements, "pip_freeze")
+    installed_requirements_data = handler.render(
+        installed_requirements, "pip_freeze"
+    )  # noqa
 
-    result = filter_requirements(requirements_file_data, installed_requirements_data)
+    result = filter_requirements(
+        requirements_file_data, installed_requirements_data
+    )  # noqa
 
     pkgs_raw_metadata = []
     for pkg in track(result, description="Processing..."):

@@ -1,8 +1,8 @@
-# cli-pymetasnap
+# pymetasnap
 
-cli-pypi-metadata-extractor is a command-line tool that enables you to extract metadata from the Python Package Index (PyPI). It allows you to retrieve essential information about Python packages hosted on PyPI, including package names, versions, licenses, project URLs, and more.
+pymetasnap is a command-line tool that enables you to extract metadata from the Python Package Index (PyPI). It allows you to retrieve essential information about Python packages hosted on PyPI, including package names, versions, licenses, project URLs, and more.
 
-By leveraging the PyPI API, cli-pypi-metadata-extractor automates the process of gathering package metadata, making it convenient for developers, researchers, and anyone interested in exploring package information in a structured manner.
+By leveraging the PyPI API, pymetasnap automates the process of gathering package metadata, making it convenient for developers, researchers, and anyone interested in exploring package information in a structured manner.
 
 ## Features
 
@@ -13,29 +13,38 @@ Store the extracted metadata in CSV or Excel format for further analysis.
 
 ## Installation
 
-You can install cli-pypi-metadata-extractor using pip:
+You can install pymetasnap using pip:
 
 ```bash
-pip install cli-pypi-metadata-extractor
+pip install pymetasnap
 ```
 
-Usage
+### Usage
+
+#### Detached mode
+
 To extract metadata for Python packages from PyPI, use the following command:
 
 ```bash
-cli-pypi-metadata-extractor --source-path <path_of_the_txt_file> --output <output_path> --format <output_format>
+pymetasnap --source-path <path_of_the_txt_file> --output <output_path> --format <output_format>
 ```
 
 Replace the following placeholders in the command:
 
-`<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
-`<output_path>`: Path to store the extracted metadata file.
-`<input_format>`: Format of the input file (csv or xlsx).
+- `<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
+- `<output_path>`: Path to store the extracted metadata file.
+- `<input_format>`: Format of the input file (csv or xlsx).
 Example usage:
 
 ```bash
-cli-pypi-metadata-extractor --source-path ./requirements.txt --output metadata.csv --format csv
+pymetasnap --source-path ./requirements.txt --output metadata.csv --format csv
 ```
+
+#### Interactive mode
+
+Additionally, an interactive mode is available, allowing you to provide the required values through user prompts as follows:
+
+[![asciicast](https://asciinema.org/a/4xs1k6elJ40kJ4YhKxuS93Rfh.svg)](https://asciinema.org/a/4xs1k6elJ40kJ4YhKxuS93Rfh)
 
 ## Output
 
@@ -43,17 +52,17 @@ The tool generates a file containing the extracted metadata for the specified pa
 
 ## Contributing
 
-Contributions to cli-pypi-metadata-extractor are welcome! If you encounter any issues or have suggestions for improvements, please open an issue on the project's GitHub repository.
+Contributions to pymetasnap are welcome! If you encounter any issues or have suggestions for improvements, please open an issue on the project's GitHub repository.
 
 When contributing, please ensure that you follow the existing coding style, write tests for new features, and make sure the tests pass before submitting a pull request.
 
 ## License
 
-cli-pypi-metadata-extractor is licensed under the MIT License. See the LICENSE file for more details.
+pymetasnap is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Acknowledgments
 
-The cli-pypi-metadata-extractor tool builds upon the PyPI API to provide a convenient way to access package metadata. We would like to express our gratitude to the PyPI maintainers and the Python community for their continuous efforts in maintaining and improving the Python Package Index.
+The pymetasnap tool builds upon the PyPI API to provide a convenient way to access package metadata. We would like to express our gratitude to the PyPI maintainers and the Python community for their continuous efforts in maintaining and improving the Python Package Index.
 
 ## Contact
 

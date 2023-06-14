@@ -20,7 +20,7 @@ def version():
     return print(get_version_from_pyproject())
 
 
-@app.command()
+@app.command(name="extract")
 def main(
     source_path: Annotated[
         Path,
