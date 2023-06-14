@@ -34,11 +34,6 @@ Replace the following placeholders in the command:
 - `<path_of_the_txt_file>`: Names of the packages to retrieve metadata for (separated by spaces).
 - `<output_path>`: Path to store the extracted metadata file.
 - `<input_format>`: Format of the input requirements file (pip_list or pip_freeze).
-Example usage:
-
-```bash
-pymetasnap --source-path ./requirements.txt --output metadata.csv --format csv
-```
 
 #### Interactive mode
 
