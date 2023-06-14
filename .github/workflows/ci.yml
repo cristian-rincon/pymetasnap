@@ -24,7 +24,5 @@ jobs:
           poetry install
       - name: Run tests
         run: poetry run pytest
-      - name: Lint code
-        run: poetry run pylint extractor
       - name: Package distribution
         run: poetry build

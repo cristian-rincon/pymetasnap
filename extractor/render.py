@@ -1,7 +1,7 @@
+"""This module contains Requirements class, which is the core of the current process."""
+
 import re
 from typing import List, Tuple
-
-from loguru import logger
 
 
 class Requirements:
@@ -28,7 +28,7 @@ class Requirements:
         Returns:
             The contents of the file as a string.
         """
-        return open(source_path).read()
+        return open(source_path, "r").read()
 
     def _from_pip_freeze(self, data: str) -> List[Tuple[str, str]]:
         """
@@ -60,7 +60,7 @@ class Requirements:
         """
         lines = data.strip().split("\n")
         package_data = [tuple(line.split()) for line in lines[2:]]
-        return [(package[0], package[1]) for package in package_data]
+        return [(package[0], package[1]) for package in package_data]  # pylint
 
     def render(self, source_path: str, format: str) -> List[Tuple[str, str]]:
         """
@@ -68,7 +68,7 @@ class Requirements:
 
         Args:
             source_path: The path to the requirements file.
-            format: The format of the requirements file (e.g., "pip_freeze", "pip_list").
+            format: The format of the requirements file (e.g., "pip_freeze", "pip_list"). # noqa
 
         Returns:
             A list of tuples containing package names and versions.
