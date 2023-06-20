@@ -4,7 +4,7 @@ from pathlib import Path
 import typer
 from typing_extensions import Annotated
 
-from extractor.core import generate_data
+from extractor.core import extract_data
 from extractor.utils import get_version_from_pyproject
 
 app = typer.Typer()
@@ -51,7 +51,7 @@ def main(
         typer.Option(prompt=True, help="Incoming requirements format."),
     ] = RequirementsFormat.pip_freeze,
 ):
-    generate_data(source_path, output, format)
+    extract_data(source_path, output, format)
 
 
 if __name__ == "__main__":

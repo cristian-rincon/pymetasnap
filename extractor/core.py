@@ -55,9 +55,9 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     }
 
 
-def generate_data(source_path: Path, output: Path, format: str) -> None:
+def extract_data(source_path: Path, output: Path, format: str) -> None:
     """
-    Generate data based on the specified requirements format.
+    Extract data based on the specified requirements format.
 
     Args:
         source_path: The path to the requirements file.
