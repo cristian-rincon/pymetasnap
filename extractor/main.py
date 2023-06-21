@@ -4,8 +4,7 @@ from pathlib import Path
 import typer
 from typing_extensions import Annotated
 
-from extractor.core import generate_data
-from extractor.utils import get_version_from_pyproject
+from extractor.core import extract_data, save_data
 
 app = typer.Typer()
 
@@ -15,13 +14,13 @@ class RequirementsFormat(str, Enum):
     pip_freeze = "pip_freeze"
 
 
-@app.command(name="version")
-def version():
-    return print(get_version_from_pyproject())
+# @app.command(name="version")
+# def version():
+#     return print(get_version_from_pyproject())
 
 
 @app.command(name="extract")
-def main(
+def extract(
     source_path: Annotated[
         Path,
         typer.Option(
@@ -51,7 +50,8 @@ def main(
         typer.Option(prompt=True, help="Incoming requirements format."),
     ] = RequirementsFormat.pip_freeze,
 ):
-    generate_data(source_path, output, format)
+    data = extract_data(source_path, format)
+    save_data(data, output)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ from loguru import logger
 from rich import print
 from rich.progress import track
 
+from extractor.checks import StandardCheck
 from extractor.render import Requirements
 
 URLBASE = "https://pypi.org/pypi"
@@ -43,29 +44,46 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     Returns:
         A dictionary containing filtered metadata.
     """
-    return {
-        "name": raw_data["name"],
+    project_name = raw_data["name"]
+    project_url = raw_data["project_url"]
+    project_urls = raw_data["project_urls"]
+    gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
+    filtered_data = {
+        "name": project_name,
         "version": version or raw_data["version"],
         "license": raw_data["license"],
-        "repository": raw_data["home_page"],
-        "project_url": raw_data["project_url"],
-        "version_url": f"{raw_data['project_url']}{version}/"
-        if version
-        else raw_data["release_url"],
+        "homepage": raw_data["home_page"],
     }
+    check = StandardCheck()
+    print(f"Searching GitHub url for: {project_name}")
+    if project_url != "" and check.gh_pattern(gh_url_pattern, project_url):
+        filtered_data["project_url"] = project_url
+
+    if project_urls:
+        print("Nested metadata found")
+        filtered_data["project_url"] = check.additional_urls(
+            gh_url_pattern, project_urls
+        )
+
+    filtered_data["version_url"] = (
+        f"{filtered_data['project_url']}/tree/{version}/"
+        if version
+        else filtered_data["release_url"]
+    )
+
+    return filtered_data
 
 
-def generate_data(source_path: Path, output: Path, format: str) -> None:
+def extract_data(source_path: Path, format: str) -> None:
     """
-    Generate data based on the specified requirements format.
+    Extract data based on the specified requirements format.
 
     Args:
         source_path: The path to the requirements file.
-        output: The path to store the generated data.
         format: The format of the requirements file.
 
     Returns:
-        None
+        pd.DataFrame
     """
     print("Starting process")
     print(f"Retrieving: {source_path}")
@@ -76,11 +94,16 @@ def generate_data(source_path: Path, output: Path, format: str) -> None:
             get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None
         )
         pkgs_raw_metadata.append(filtered_data)
-    df = pd.DataFrame(pkgs_raw_metadata)
+    return pd.DataFrame(pkgs_raw_metadata)
+
+
+def save_data(data: pd.DataFrame, output: Path):
     print(f"Storing into: {output}")
     if str(output).endswith(".csv"):
-        df.to_csv(output, index=False)
+        data.to_csv(output, index=False)
+        print("All done! Have a Great day")
     elif str(output).endswith(".xlsx"):
-        df.to_excel(output, index=False)
+        data.to_excel(output, index=False)
+        print("All done! Have a Great day")
     else:
         logger.error("Not supported format.")
