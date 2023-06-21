@@ -3,11 +3,10 @@ from typing import Dict
 
 import pandas as pd
 import requests
-from loguru import logger
-from rich import print
 from rich.progress import track
 
 from extractor.checks import StandardCheck
+from extractor.logger import logger
 from extractor.render import Requirements
 
 URLBASE = "https://pypi.org/pypi"
@@ -53,24 +52,25 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
         "version": version or raw_data["version"],
         "license": raw_data["license"],
         "homepage": raw_data["home_page"],
+        "release_url": raw_data["release_url"],
     }
     check = StandardCheck()
-    print(f"Searching GitHub url for: {project_name}")
+    logger.info(f"Searching GitHub url for: {project_name}")
+
+    # logger.info(f"Searching GitHub url for: {project_name}")
     if project_url != "" and check.gh_pattern(gh_url_pattern, project_url):
         filtered_data["project_url"] = project_url
 
     if project_urls:
-        print("Nested metadata found")
+        logger.debug("Nested metadata found")
         filtered_data["project_url"] = check.additional_urls(
             gh_url_pattern, project_urls
         )
+    if project_name == "pandas":
+        version = f"v{filtered_data['version']}"
+        filtered_data["version"] = version
 
-    filtered_data["version_url"] = (
-        f"{filtered_data['project_url']}/tree/{version}/"
-        if version
-        else filtered_data["release_url"]
-    )
-
+    filtered_data = check.version(version, gh_url_pattern, raw_data, filtered_data)
     return filtered_data
 
 
@@ -85,11 +85,11 @@ def extract_data(source_path: Path, format: str) -> None:
     Returns:
         pd.DataFrame
     """
-    print("Starting process")
-    print(f"Retrieving: {source_path}")
+    logger.info("Starting process")
+    logger.debug(f"Retrieving: {source_path}")
     result = Requirements().render(source_path, format)
     pkgs_raw_metadata = []
-    for pkg in track(result, description="Processing..."):
+    for pkg in track(result):
         filtered_data = filter_data(
             get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None
         )
@@ -98,12 +98,12 @@ def extract_data(source_path: Path, format: str) -> None:
 
 
 def save_data(data: pd.DataFrame, output: Path):
-    print(f"Storing into: {output}")
+    logger.info(f"Storing into: {output}")
     if str(output).endswith(".csv"):
         data.to_csv(output, index=False)
-        print("All done! Have a Great day")
+        logger.info("All done! Have a Great day")
     elif str(output).endswith(".xlsx"):
         data.to_excel(output, index=False)
-        print("All done! Have a Great day")
+        logger.info("All done! Have a Great day")
     else:
         logger.error("Not supported format.")

@@ -1,10 +1,10 @@
 import pandas as pd
 import toml
-from loguru import logger
 from rich import print
 from rich.progress import track
 
 from extractor.core import filter_data, get_raw_data
+from extractor.logger import logger
 from extractor.render import Requirements
 
 
