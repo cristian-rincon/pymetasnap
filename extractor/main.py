@@ -2,11 +2,13 @@ from enum import Enum
 from pathlib import Path
 
 import typer
+from rich import print
 from typing_extensions import Annotated
 
 from extractor.core import extract_data, save_data
 
 app = typer.Typer()
+VERSION = "0.2.0"
 
 
 class RequirementsFormat(str, Enum):
@@ -14,13 +16,13 @@ class RequirementsFormat(str, Enum):
     pip_freeze = "pip_freeze"
 
 
-# @app.command(name="version")
-# def version():
-#     return print(get_version_from_pyproject())
+@app.command(name="version")
+def version():
+    return print(VERSION)
 
 
 @app.command(name="extract")
-def extract(
+def main(
     source_path: Annotated[
         Path,
         typer.Option(
