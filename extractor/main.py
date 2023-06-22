@@ -23,12 +23,12 @@ def main(
         typer.Option(
             exists=True,
             file_okay=True,
-            dir_okay=False,
-            writable=False,
+            dir_okay=True,
+            writable=True,
             readable=True,
             resolve_path=True,
             prompt=True,
-            help="Requirements file path",
+            help="Requirements files paths. Can be a single file, or a folder",
         ),
     ] = "",
     output: Annotated[

@@ -33,7 +33,7 @@ class StandardCheck:
 
     def licenses(self, raw_data: Dict) -> str:
         licenses = raw_data["license"]
-        if licenses != "":
+        if licenses != "" and licenses is not None:
             return licenses
         licenses_pattern = r"^[lL]icense.*"
 
