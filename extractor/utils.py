@@ -1,20 +1,10 @@
 import pandas as pd
-import toml
 from rich import print
 from rich.progress import track
 
 from extractor.core import filter_data, get_raw_data
 from extractor.logger import logger
 from extractor.render import Requirements
-
-
-def get_version_from_pyproject():
-    with open("pyproject.toml") as f:
-        pyproject_data = toml.load(f)
-        version = (
-            pyproject_data.get("tool", {}).get("poetry", {}).get("version")
-        )  # noqa
-    return version
 
 
 def filter_requirements(requirements_file_data, installed_requirements_data):

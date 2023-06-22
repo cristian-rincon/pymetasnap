@@ -41,6 +41,7 @@ class Requirements:
             A list of tuples containing package names and versions.
         """
         lines = data.strip().split("\n")
+        lines = [line for line in lines if not line.startswith("#")]
         pattern = r"(==|<=|>=|<|>)"
         package_data = [re.split(pattern, line) for line in lines]
         return [
