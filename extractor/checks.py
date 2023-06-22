@@ -23,6 +23,8 @@ class StandardCheck:
             "Home",
             "Repository",
             "repository",
+            "Download",
+            "download",
         ]
         for title, url in urls:
             if _ := self.gh_pattern(pattern, url) and title in possible_keys:
