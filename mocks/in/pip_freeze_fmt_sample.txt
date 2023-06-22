@@ -28,3 +28,7 @@ typing_extensions==4.6.3
 tzdata==2023.3
 urllib3==2.0.3
 pandas
+great-expectations
+setuptools
+wheel
+typing-extensions
