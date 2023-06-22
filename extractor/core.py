@@ -46,26 +46,19 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     project_name = raw_data["name"]
     project_url = raw_data["project_url"]
     project_urls = raw_data["project_urls"]
+    check = StandardCheck()
     gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
     filtered_data = {
         "name": project_name,
         "version": version or raw_data["version"],
-        "license": raw_data["license"],
+        "license": check.licenses(raw_data),
         "homepage": raw_data["home_page"],
         "release_url": raw_data["release_url"],
+        "project_url": check.project_url(gh_url_pattern, project_url, project_urls),
     }
-    check = StandardCheck()
+
     logger.info(f"Searching GitHub url for: {project_name}")
 
-    # logger.info(f"Searching GitHub url for: {project_name}")
-    if project_url != "" and check.gh_pattern(gh_url_pattern, project_url):
-        filtered_data["project_url"] = project_url
-
-    if project_urls:
-        logger.debug("Nested metadata found")
-        filtered_data["project_url"] = check.additional_urls(
-            gh_url_pattern, project_urls
-        )
     if project_name == "pandas":
         version = f"v{filtered_data['version']}"
         filtered_data["version"] = version
