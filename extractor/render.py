@@ -1,7 +1,13 @@
 """This module contains Requirements class, which is the core of the current process."""
-
+import os
 import re
+from enum import Enum
 from typing import List, Tuple
+
+
+class RequirementsFormat(str, Enum):
+    pip_list = "pip_list"
+    pip_freeze = "pip_freeze"
 
 
 class Requirements:
@@ -18,6 +24,19 @@ class Requirements:
         render: Render the requirements data based on the specified format.
     """
 
+    def _merge_multiple_requirements(self, source_path: str) -> set:
+        requirements = set()
+        paths = os.listdir(source_path)
+        paths = [
+            os.path.join(source_path, path) for path in paths if path.endswith(".txt")
+        ]
+
+        for file in paths:
+            with open(file, "r") as src:
+                requirements.update(src.read().splitlines())
+
+        return requirements
+
     def _read_file_contents(self, source_path: str) -> str:
         """
         Read the contents of a file.
@@ -28,7 +47,11 @@ class Requirements:
         Returns:
             The contents of the file as a string.
         """
-        return open(source_path, "r").read()
+        basepath = os.path.abspath(source_path)
+        if os.path.isdir(basepath):
+            return self._merge_multiple_requirements(basepath)
+        with open(basepath, "r") as src:
+            return src.read().splitlines()
 
     def _from_pip_freeze(self, data: str) -> List[Tuple[str, str]]:
         """
@@ -40,8 +63,8 @@ class Requirements:
         Returns:
             A list of tuples containing package names and versions.
         """
-        lines = data.strip().split("\n")
-        lines = [line for line in lines if not line.startswith("#")]
+
+        lines = [line for line in data if not line.startswith("#")]
         pattern = r"(==|<=|>=|<|>)"
         package_data = [re.split(pattern, line) for line in lines]
         return [
@@ -59,8 +82,8 @@ class Requirements:
         Returns:
             A list of tuples containing package names and versions.
         """
-        lines = data.strip().split("\n")
-        package_data = [tuple(line.split()) for line in lines[2:]]
+
+        package_data = [tuple(line.split()) for line in data[2:]]
         return [(package[0], package[1]) for package in package_data]  # pylint
 
     def render(self, source_path: str, format: str) -> List[Tuple[str, str]]:

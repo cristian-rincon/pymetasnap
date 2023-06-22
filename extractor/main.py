@@ -1,4 +1,3 @@
-from enum import Enum
 from pathlib import Path
 
 import typer
@@ -6,14 +5,10 @@ from rich import print
 from typing_extensions import Annotated
 
 from extractor.core import extract_data, save_data
+from extractor.render import RequirementsFormat
 
 app = typer.Typer()
-VERSION = "0.2.1"
-
-
-class RequirementsFormat(str, Enum):
-    pip_list = "pip_list"
-    pip_freeze = "pip_freeze"
+VERSION = "0.2.2"
 
 
 @app.command(name="version")
@@ -28,12 +23,12 @@ def main(
         typer.Option(
             exists=True,
             file_okay=True,
-            dir_okay=False,
-            writable=False,
+            dir_okay=True,
+            writable=True,
             readable=True,
             resolve_path=True,
             prompt=True,
-            help="Requirements file path",
+            help="Requirements files paths. Can be a single file, or a folder",
         ),
     ] = "",
     output: Annotated[
