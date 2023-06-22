@@ -8,7 +8,7 @@ from typing_extensions import Annotated
 from extractor.core import extract_data, save_data
 
 app = typer.Typer()
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 
 class RequirementsFormat(str, Enum):
