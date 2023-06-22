@@ -1,7 +1,13 @@
 """This module contains Requirements class, which is the core of the current process."""
 
 import re
+from enum import Enum
 from typing import List, Tuple
+
+
+class RequirementsFormat(str, Enum):
+    pip_list = "pip_list"
+    pip_freeze = "pip_freeze"
 
 
 class Requirements:

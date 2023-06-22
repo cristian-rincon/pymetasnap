@@ -1,4 +1,3 @@
-from enum import Enum
 from pathlib import Path
 
 import typer
@@ -6,14 +5,10 @@ from rich import print
 from typing_extensions import Annotated
 
 from extractor.core import extract_data, save_data
+from extractor.render import RequirementsFormat
 
 app = typer.Typer()
 VERSION = "0.2.1"
-
-
-class RequirementsFormat(str, Enum):
-    pip_list = "pip_list"
-    pip_freeze = "pip_freeze"
 
 
 @app.command(name="version")
