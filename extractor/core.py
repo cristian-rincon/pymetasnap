@@ -46,14 +46,16 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     project_name = raw_data["name"]
     project_url = raw_data["project_url"]
     project_urls = raw_data["project_urls"]
+    project_version = version or raw_data["version"]
     check = StandardCheck()
+    pypi_url = f"https://pypi.org/project/{project_name}/{project_version}/"
     gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
     filtered_data = {
         "name": project_name,
-        "version": version or raw_data["version"],
+        "version": project_version,
         "license": check.licenses(raw_data),
-        "homepage": raw_data["home_page"],
-        "release_url": raw_data["release_url"],
+        # "homepage": raw_data["home_page"],
+        "pypi_release_url": pypi_url,
         "project_url": check.project_url(gh_url_pattern, project_url, project_urls),
     }
 
@@ -63,7 +65,8 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
         version = f"v{filtered_data['version']}"
         filtered_data["version"] = version
 
-    filtered_data = check.version(version, gh_url_pattern, raw_data, filtered_data)
+    filtered_data = check.version(version, gh_url_pattern, filtered_data)
+    del filtered_data["project_url"]
     return filtered_data
 
 
@@ -81,13 +84,14 @@ def extract_data(source_path: Path, format: str) -> None:
     logger.info("Starting process")
     logger.debug(f"Retrieving: {source_path}")
     result = Requirements().render(source_path, format)
+    custom_columns_order = ["license", "name"]
     pkgs_raw_metadata = []
     for pkg in track(result):
         filtered_data = filter_data(
             get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None
         )
         pkgs_raw_metadata.append(filtered_data)
-    return pd.DataFrame(pkgs_raw_metadata)
+    return pd.DataFrame(pkgs_raw_metadata).sort_values(by=custom_columns_order)
 
 
 def save_data(data: pd.DataFrame, output: Path):

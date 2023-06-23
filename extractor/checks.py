@@ -49,23 +49,17 @@ class StandardCheck:
             logger.debug("Nested metadata found")
             return self.additional_urls(pattern, project_urls)
 
-    def version(
-        self, version: str, pattern: str, raw_data: Dict, filtered_data: Dict
-    ) -> Dict:
+    def version(self, version: str, pattern: str, filtered_data: Dict) -> Dict:
         project_default_error = "No project url found, please check manually"
-        version_default_error = "No version url found, please check manually"
         if version and self.gh_pattern(
             pattern, filtered_data.get("project_url"), project_default_error
         ):
             filtered_data[
                 "version_url"
             ] = f"{filtered_data['project_url']}/tree/{version}/"
-        elif raw_data["release_url"] and self.gh_pattern(
-            pattern, filtered_data.get("project_url"), version_default_error
-        ):
-            filtered_data["version_url"] = raw_data["release_url"]
 
         else:
+            version_default_error = "No version url found, please check manually"
             filtered_data["version_url"] = version_default_error
-            filtered_data["project_url"] = project_default_error
+
         return filtered_data
