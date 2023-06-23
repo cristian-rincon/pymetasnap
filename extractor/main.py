@@ -8,7 +8,7 @@ from extractor.core import extract_data, save_data
 from extractor.render import RequirementsFormat
 
 app = typer.Typer()
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 
 
 @app.command(name="version")
