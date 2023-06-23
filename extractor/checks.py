@@ -1,6 +1,8 @@
 import re
 from typing import Dict
 
+import requests
+
 from extractor.logger import logger
 
 
@@ -49,17 +51,52 @@ class StandardCheck:
             logger.debug("Nested metadata found")
             return self.additional_urls(pattern, project_urls)
 
+    def _url_exists(self, url) -> bool:
+        response = requests.get(url)
+        return response.status_code != 404
+
+    def _version_handler(self, filtered_data: Dict, version: str):
+        exceptions = {
+            "pandas": f"v{version}",
+            "azure-keyvault-secrets": f"azure-keyvault-secrets_{version}",
+            "azure-storage-blob": f"azure-storage-blob_{version}",
+            "pyspark": f"pyspark_v{version}",
+            "loguru": f"{filtered_data['project_url'].rsplit('/', 1)[0].replace('archive','')}tree/{version}/",
+        }
+
+        version = exceptions.get(filtered_data["name"], version)
+
+        if version and version.startswith("azure"):
+            return f"{filtered_data['project_url'].replace('main',version)}"
+
+        if version and version.startswith("pyspark"):
+            return f"{filtered_data['project_url'].replace('master',version).replace('pyspark_','')}"
+
+        if "loguru" in version:
+            return version
+
+        default_url = f"{filtered_data['project_url']}/tree/{version}/"
+
+        return (
+            default_url
+            if self._url_exists(default_url)
+            else f"{filtered_data['project_url']}/tree/v{version}/"
+        )
+
     def version(self, version: str, pattern: str, filtered_data: Dict) -> Dict:
         project_default_error = "No project url found, please check manually"
+        version_default_error = "No version url found, please check manually"
         if version and self.gh_pattern(
             pattern, filtered_data.get("project_url"), project_default_error
         ):
-            filtered_data[
-                "version_url"
-            ] = f"{filtered_data['project_url']}/tree/{version}/"
-
+            project_url = self._version_handler(filtered_data, version)
+            if _ := self._url_exists(project_url):
+                filtered_data["version_url"] = self._version_handler(
+                    filtered_data, version
+                )
+            else:
+                filtered_data["version_url"] = version_default_error
         else:
-            version_default_error = "No version url found, please check manually"
             filtered_data["version_url"] = version_default_error
 
         return filtered_data

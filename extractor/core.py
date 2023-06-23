@@ -61,10 +61,6 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
 
     logger.info(f"Searching GitHub url for: {project_name}")
 
-    if project_name == "pandas":
-        version = f"v{filtered_data['version']}"
-        filtered_data["version"] = version
-
     filtered_data = check.version(version, gh_url_pattern, filtered_data)
     del filtered_data["project_url"]
     return filtered_data
