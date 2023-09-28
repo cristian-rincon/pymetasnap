@@ -46,27 +46,30 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
     Returns:
         A dictionary containing filtered metadata.
     """
-    project_name = raw_data["name"]
-    project_url = raw_data["project_url"]
-    project_urls = raw_data["project_urls"]
-    project_version = version or raw_data["version"]
-    check = StandardCheck()
-    pypi_url = f"https://pypi.org/project/{project_name}/{project_version}/"
-    gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
-    filtered_data = {
-        "name": project_name,
-        "version": project_version,
-        "license": check.licenses(raw_data),
-        # "homepage": raw_data["home_page"],
-        "pypi_release_url": pypi_url,
-        "project_url": check.project_url(gh_url_pattern, project_url, project_urls),
-    }
+    if raw_data:
+        project_name = raw_data["name"]
+        project_url = raw_data["project_url"]
+        project_urls = raw_data["project_urls"]
+        project_version = version or raw_data["version"]
+        check = StandardCheck()
+        pypi_url = f"https://pypi.org/project/{project_name}/{project_version}/"
+        gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
+        filtered_data = {
+            "name": project_name,
+            "version": project_version,
+            "license": check.licenses(raw_data),
+            # "homepage": raw_data["home_page"],
+            "pypi_release_url": pypi_url,
+            "project_url": check.project_url(gh_url_pattern, project_url, project_urls),
+        }
 
-    logger.info(f"Searching GitHub url for: {project_name}")
+        logger.info(f"Searching GitHub url for: {project_name}")
 
-    filtered_data = check.version(version, gh_url_pattern, filtered_data)
-    del filtered_data["project_url"]
-    return filtered_data
+        filtered_data = check.version(version, gh_url_pattern, filtered_data)
+        del filtered_data["project_url"]
+        return filtered_data
+
+    return {}
 
 
 def extract_data(source_path: Path, format: str) -> None:
@@ -89,7 +92,8 @@ def extract_data(source_path: Path, format: str) -> None:
         filtered_data = filter_data(
             get_raw_data(pkg[0]), pkg[1] if len(pkg) > 1 else None
         )
-        pkgs_raw_metadata.append(filtered_data)
+        if filtered_data:
+            pkgs_raw_metadata.append(filtered_data)
     return pd.DataFrame(pkgs_raw_metadata).sort_values(by=custom_columns_order)
 
 
