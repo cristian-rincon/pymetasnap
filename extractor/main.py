@@ -1,3 +1,4 @@
+from importlib.metadata import version as pkg_version
 from pathlib import Path
 
 import typer
@@ -8,7 +9,7 @@ from extractor.core import extract_data, save_data
 from extractor.render import RequirementsFormat
 
 app = typer.Typer()
-VERSION = "0.2.4"
+VERSION = pkg_version("pymetasnap")
 
 
 @app.command(name="version")

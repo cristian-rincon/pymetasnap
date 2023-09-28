@@ -29,6 +29,9 @@ def get_raw_data(project: str) -> Dict[str, str]:
     except Exception as e:
         logger.error(e)
     else:
+        if r.status_code == 404:
+            logger.error(f"Project {project} not found")
+            return {}
         return r.json()["info"]
 
 
