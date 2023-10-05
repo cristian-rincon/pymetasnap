@@ -11,4 +11,5 @@ jobs:
       - uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           target: minor
+          config: .github/workflows/dependabot-auto-merge.yml
           github-token: ${{github.token}}
