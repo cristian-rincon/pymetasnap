@@ -12,9 +12,9 @@ runner = CliRunner()
 
 
 def test_pip_freeze_format():
-    source_path = os.path.join(INPUTS_PATH, "pip_freeze", "sample_1.txt")
-    output_path = os.path.join(OUTPUTS_PATH, "pip_freeze_sample_1.csv")
     input_format = "pip_freeze"
+    source_path = os.path.join(INPUTS_PATH, input_format, "sample_1.txt")
+    output_path = os.path.join(OUTPUTS_PATH, input_format, "pip_freeze_sample_1.csv")
 
     data = extract_data(
         source_path,
@@ -31,9 +31,9 @@ def test_pip_freeze_format():
 
 
 def test_pip_list_format():
-    source_path = os.path.join(INPUTS_PATH, "pip_list", "sample_3.txt")
-    output_path = os.path.join(OUTPUTS_PATH, "pip_list_sample_3.csv")
     input_format = "pip_list"
+    source_path = os.path.join(INPUTS_PATH, input_format, "sample_3.txt")
+    output_path = os.path.join(OUTPUTS_PATH, input_format,"pip_list_sample_3.csv")
 
     data = extract_data(
         source_path,
