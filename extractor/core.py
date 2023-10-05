@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Dict
 
@@ -98,7 +99,11 @@ def extract_data(source_path: Path, format: str) -> None:
 
 
 def save_data(data: pd.DataFrame, output: Path):
+    # Extract directory from the output string
+    output_directory = os.path.dirname(output)
     logger.info(f"Storing into: {output}")
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
     if str(output).endswith(".csv"):
         data.to_csv(output, index=False)
         logger.info("All done! Have a Great day")
