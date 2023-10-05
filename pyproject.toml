@@ -20,13 +20,13 @@ pandas = "^2.0.2"
 loguru = "^0.7.0"
 requests = "^2.31.0"
 toml = "^0.10.2"
-pylint = "^2.17.4"
+pylint = ">=2.17.4,<4.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^23.3.0", allow-prereleases = true}
 pytest = "^7.3.1"
-pylint = "^2.17.4"
+pylint = ">=2.17.4,<4.0.0"
 pre-commit = "^3.3.2"
 jupyterlab = "^4.0.2"
 
