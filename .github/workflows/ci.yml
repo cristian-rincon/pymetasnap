@@ -30,14 +30,13 @@ jobs:
           poetry run pytest -n 3 \
           --cov=extractor --cov-report xml:coverage.xml \
           --disable-warnings
-      - name: Package distribution
-        run: poetry build
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
       - name: Get Coverage comments on PR
         if: github.event_name == 'pull_request'
         uses: orgoro/coverage@v3.1
         with:
             coverageFile: coverage.xml
             token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Package distribution
+        run: poetry build
+
+
