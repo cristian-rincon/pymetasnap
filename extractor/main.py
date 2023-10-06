@@ -47,7 +47,7 @@ def main(
         RequirementsFormat,
         typer.Option(prompt=True, help="Incoming requirements format."),
     ] = RequirementsFormat.pip_freeze,
-):
+):  # pragma: no cover
     data = extract_data(source_path, format)
     save_data(data, output)
 

@@ -31,6 +31,7 @@ jobs:
         run: |
           poetry run pytest -n 3 \
           --cov=extractor --cov-report xml:coverage.xml \
+          --cov-config=.code_quality/.coveragerc
           --disable-warnings
       - name: Get Coverage comments on PR
         if: github.event_name == 'pull_request'
@@ -40,5 +41,3 @@ jobs:
             token: ${{ secrets.GITHUB_TOKEN }}
       - name: Package distribution
         run: poetry build
-
-
