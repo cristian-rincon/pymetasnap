@@ -4,9 +4,8 @@ permissions:
   contents: write
   pull-requests: write
 on:
-  push:
-    tags: 
-      - '0.*.*'
+  release:
+    types: [published]
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
