@@ -59,9 +59,9 @@ jobs:
           auto-changelog
           git add CHANGELOG.md
           git commit -m "chore: updating changelog"
-          git push origin --tags
+          git push && git push origin --tags
       - name: Create Tag and Release
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
