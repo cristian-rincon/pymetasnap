@@ -1,4 +1,4 @@
-# pymetasnap
+# pymetasnap [![PyPI version](https://badge.fury.io/py/pymetasnap.svg)](https://badge.fury.io/py/pymetasnap)
 
 pymetasnap is a command-line tool that enables you to extract metadata from the Python Package Index (PyPI). It allows you to retrieve essential information about Python packages hosted on PyPI, including package names, versions, licenses, project URLs, and more.
 
