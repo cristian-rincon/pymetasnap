@@ -68,7 +68,7 @@ jobs:
           PACKAGE_VERSION: ${{ steps.update-package-version.outputs.PACKAGE_VERSION }}
         with:
           tag_name: ${{ env.PACKAGE_VERSION }}
-          release_name: Release ${{ env.PACKAGE_VERSION }}
+          release_name: ${{ env.PACKAGE_VERSION }}
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
