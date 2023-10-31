@@ -6,7 +6,7 @@ on:
       - poetry.lock
       - pyproject.toml
     branches:
-      - master
+      - main
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
