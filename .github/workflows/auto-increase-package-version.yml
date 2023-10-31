@@ -1,0 +1,67 @@
+name: Update Package Version and Create Release
+on:
+  push:
+    paths-ignore:
+      - CHANGELOG.md
+      - poetry.lock
+      - pyproject.toml
+    branches:
+      - master
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  update-version-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9' # Replace with your Python version
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          npm install -g auto-changelog
+      - name: Build the package
+        run: |
+          poetry install --only main
+      - name: Determine Version Bump
+        id: determine_version_bump
+        run: |
+          MESSAGE=$(git log -1 --pretty=format:'%s')
+          if [[ $MESSAGE == build* ]]; then
+              echo "::set-output name=bump::patch"
+          else
+              echo "::set-output name=bump::minor"
+          fi
+      - name: Update package version
+        run: |
+          poetry version ${{ steps.determine_version_bump.outputs.bump }}
+          echo ::set-env name=PACKAGE_VERSION::$(poetry version | awk '{print $NF}')
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "Bump ${{ steps.determine_version_bump.outputs.bump }} version"
+          git push
+      - name: Create Tag
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag -a ${{ env.PACKAGE_VERSION }}
+          npm i -g auto-changelog
+          auto-changelog
+          git add CHANGELOG.md
+          git commit -m "chore: updating changelog"
+          git push origin --tags
+      - name: Create Tag and Release
+        if: github.ref == 'refs/heads/master'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.PACKAGE_VERSION }}
+          release_name: Release ${{ env.PACKAGE_VERSION }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
