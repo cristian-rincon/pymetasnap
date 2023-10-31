@@ -1,98 +1,32 @@
+---
 name: Release
 permissions:
   contents: write
   pull-requests: write
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches:
-      - main
+  push:
+    tags: ['*']
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
-  update-version-and-publish:
+  release:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10' # Replace with your Python version
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           pip install poetry
-          npm install -g auto-changelog
       - name: Build the package
         run: |
           poetry install --only main
-      - name: Determine Version Bump
-        id: determine_version_bump
-        run: |
-          MESSAGE=$(git log -1 --pretty=format:'%s')
-          if [[ $MESSAGE == build* ]]; then
-              echo "::set-output name=bump::patch"
-          else
-              echo "::set-output name=bump::minor"
-          fi
-      - name: Update package version
-        id: update-package-version
-        run: |
-          poetry version ${{ steps.determine_version_bump.outputs.bump }}
-          echo "PACKAGE_VERSION=$(poetry version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add pyproject.toml
-          git commit -m "Bump ${{ steps.determine_version_bump.outputs.bump }} version"
-          git push
-      - name: Create Tag
-        env:
-          PACKAGE_VERSION: ${{ steps.update-package-version.outputs.PACKAGE_VERSION }}
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag -a $PACKAGE_VERSION -m "chore: Bumping $PACKAGE_VERSION"
-          npm i -g auto-changelog
-          auto-changelog
-          git add CHANGELOG.md
-          git commit -m "chore: updating changelog"
-          git push && git push origin --tags
-      - name: Create Tag and Release
-        if: github.ref == 'refs/heads/main'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_VERSION: ${{ steps.update-package-version.outputs.PACKAGE_VERSION }}
+          poetry build
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
         with:
-          tag_name: ${{ env.PACKAGE_VERSION }}
-          release_name: ${{ env.PACKAGE_VERSION }}
-          body_path: CHANGELOG.md
-          draft: false
-          prerelease: false
-  release:
-    runs-on: ubuntu-latest
-    needs: [update-version-and-publish]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip poetry
-        pip install build
-    - name: Build package
-      run: python -m poetry build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-  on-failure:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-      - run: echo 'The triggering workflow failed'
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
