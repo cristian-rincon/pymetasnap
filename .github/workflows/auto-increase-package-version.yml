@@ -39,6 +39,7 @@ jobs:
               echo "::set-output name=bump::minor"
           fi
       - name: Update package version
+        id: update-package-version
         run: |
           poetry version ${{ steps.determine_version_bump.outputs.bump }}
           echo "PACKAGE_VERSION=$(poetry version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
@@ -49,7 +50,7 @@ jobs:
           git push
       - name: Create Tag
         env:
-          PACKAGE_VERSION: ${{ steps.color-selector.outputs.PACKAGE_VERSION }}
+          PACKAGE_VERSION: ${{ steps.update-package-version.outputs.PACKAGE_VERSION }}
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
@@ -64,7 +65,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_VERSION: ${{ steps.color-selector.outputs.PACKAGE_VERSION }}
+          PACKAGE_VERSION: ${{ steps.update-package-version.outputs.PACKAGE_VERSION }}
         with:
           tag_name: ${{ env.PACKAGE_VERSION }}
           release_name: Release ${{ env.PACKAGE_VERSION }}
