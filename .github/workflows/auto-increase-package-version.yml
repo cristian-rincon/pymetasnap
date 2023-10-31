@@ -1,4 +1,7 @@
 name: Update Package Version and Create Release
+permissions:
+  contents: write
+  pull-requests: write
 on:
   push:
     paths-ignore:
@@ -38,17 +41,19 @@ jobs:
       - name: Update package version
         run: |
           poetry version ${{ steps.determine_version_bump.outputs.bump }}
-          echo ::set-env name=PACKAGE_VERSION::$(poetry version | awk '{print $NF}')
+          echo "PACKAGE_VERSION=$(poetry version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git add pyproject.toml
           git commit -m "Bump ${{ steps.determine_version_bump.outputs.bump }} version"
           git push
       - name: Create Tag
+        env:
+          PACKAGE_VERSION: ${{ steps.color-selector.outputs.PACKAGE_VERSION }}
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git tag -a ${{ env.PACKAGE_VERSION }}
+          git tag -a $PACKAGE_VERSION
           npm i -g auto-changelog
           auto-changelog
           git add CHANGELOG.md
@@ -59,6 +64,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_VERSION: ${{ steps.color-selector.outputs.PACKAGE_VERSION }}
         with:
           tag_name: ${{ env.PACKAGE_VERSION }}
           release_name: Release ${{ env.PACKAGE_VERSION }}
