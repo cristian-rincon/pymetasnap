@@ -61,4 +61,4 @@ The pymetasnap tool builds upon the PyPI API to provide a convenient way to acce
 
 ## Contact
 
-For any inquiries or feedback, please contact the project maintainer at cristian.o.rincon.b@gmail.com.
+For any inquiries or feedback, please contact the project maintainer at cristian.o.rincon.b@gmail.com
