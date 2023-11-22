@@ -1,4 +1,4 @@
-from extractor.core import get_raw_data, filter_data
+from extractor.core import filter_data, get_raw_data
 
 
 def test_get_raw_data():

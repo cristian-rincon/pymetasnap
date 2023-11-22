@@ -55,6 +55,7 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
         check = StandardCheck()
         pypi_url = f"https://pypi.org/project/{project_name}/{project_version}/"
         gh_url_pattern = r"(https:\/\/|http:\/\/)github\.com"
+        project_url = check.project_url(gh_url_pattern, project_url, project_urls)
         filtered_data = {
             "name": project_name,
             "version": project_version,
@@ -67,6 +68,12 @@ def filter_data(raw_data: Dict[str, str], version: str) -> Dict[str, str]:
         logger.info(f"Searching GitHub url for: {project_name}")
 
         filtered_data = check.version(version, gh_url_pattern, filtered_data)
+        filtered_data["version_url"] = (
+            filtered_data["version_url"]
+            if filtered_data["version_url"]
+            not in [check.project_default_error, check.version_default_error]
+            else pypi_url
+        )
         del filtered_data["project_url"]
         return filtered_data
 
@@ -87,7 +94,6 @@ def extract_data(source_path: Path, format: str) -> None:
     logger.info("Starting process")
     logger.debug(f"Retrieving: {source_path}")
     result = Requirements().render(source_path, format)
-    custom_columns_order = ["license", "name"]
     pkgs_raw_metadata = []
     for pkg in track(result):
         filtered_data = filter_data(
@@ -95,7 +101,11 @@ def extract_data(source_path: Path, format: str) -> None:
         )
         if filtered_data:
             pkgs_raw_metadata.append(filtered_data)
-    return pd.DataFrame(pkgs_raw_metadata).sort_values(by=custom_columns_order)
+    output = pd.DataFrame(pkgs_raw_metadata)
+    output["uppercased_name"] = output["name"].str.upper()
+    output = output.sort_values(by=["uppercased_name"])
+    del output["uppercased_name"]
+    return output
 
 
 def save_data(data: pd.DataFrame, output: Path):

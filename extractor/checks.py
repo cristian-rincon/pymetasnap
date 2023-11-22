@@ -7,6 +7,10 @@ from extractor.logger import logger
 
 
 class StandardCheck:
+    def __init__(self):
+        self.project_default_error = "No project url found, please check manually"
+        self.version_default_error = "No version url found, please check manually"
+
     def gh_pattern(self, pattern: str, url: str, custom_error: str = None):
         try:
             found = re.search(pattern, url)
@@ -84,10 +88,8 @@ class StandardCheck:
         )
 
     def version(self, version: str, pattern: str, filtered_data: Dict) -> Dict:
-        project_default_error = "No project url found, please check manually"
-        version_default_error = "No version url found, please check manually"
         if version and self.gh_pattern(
-            pattern, filtered_data.get("project_url"), project_default_error
+            pattern, filtered_data.get("project_url"), self.project_default_error
         ):
             project_url = self._version_handler(filtered_data, version)
             if _ := self._url_exists(project_url):
@@ -95,8 +97,7 @@ class StandardCheck:
                     filtered_data, version
                 )
             else:
-                filtered_data["version_url"] = version_default_error
+                filtered_data["version_url"] = self.version_default_error
         else:
-            filtered_data["version_url"] = version_default_error
-
+            filtered_data["version_url"] = self.version_default_error
         return filtered_data
