@@ -104,6 +104,7 @@ def extract_data(source_path: Path, format: str) -> None:
     output = pd.DataFrame(pkgs_raw_metadata)
     output["uppercased_name"] = output["name"].str.upper()
     output = output.sort_values(by=["uppercased_name"])
+    output = output.drop_duplicates(subset=["uppercased_name"], keep="first")
     del output["uppercased_name"]
     return output
 
