@@ -29,7 +29,7 @@ def is_python(project: str) -> bool:
     Returns:
         A boolean value.
     """
-    return project.startswith("python")
+    return project.startswith("python/")
 
 
 def is_iac_project(project: str) -> bool:
