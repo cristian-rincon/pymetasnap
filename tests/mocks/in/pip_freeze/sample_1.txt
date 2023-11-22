@@ -6,5 +6,7 @@ scikit-learn==1.2.1
 great_expectations==0.15.47
 pandas==2.0.2
 XlsxWriter
+hashicorp/terraform==v1.6.3
+databricks/terraform-provider-databricks==v1.29.0
 # Sphinx
 # sphinx-rtd-theme

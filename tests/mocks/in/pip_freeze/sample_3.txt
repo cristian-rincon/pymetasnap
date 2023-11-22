@@ -1,0 +1,2 @@
+hashicorp/terraform==v1.6.3
+python/cpython==v3.9.18
