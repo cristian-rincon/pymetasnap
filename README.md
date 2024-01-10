@@ -6,10 +6,10 @@ By leveraging the PyPI API, pymetasnap automates the process of gathering packag
 
 ## Features
 
-Retrieve metadata for Python packages from PyPI.
-Extract package names, versions, licenses, and other relevant information.
-Fetch project URLs and version-specific URLs for detailed package exploration.
-Store the extracted metadata in CSV or Excel format for further analysis.
+- Retrieve metadata for Python packages from PyPI.
+- Extract package names, versions, licenses, and other relevant information.
+- Fetch project URLs and version-specific URLs for detailed package exploration.
+- Store the extracted metadata in CSV or Excel format for further analysis.
 
 ## Installation
 
