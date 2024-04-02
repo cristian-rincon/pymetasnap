@@ -53,7 +53,7 @@ When contributing, please ensure that you follow the existing coding style, writ
 
 ## License
 
-pymetasnap is licensed under the MIT License. See the LICENSE file for more details.
+pymetasnap is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
 
 ## Acknowledgments
 
