@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [main]
     paths-ignore: [CHANGELOG.md, poetry.lock, pyproject.toml]
+  workflow_dispatch:
 jobs:
   build:
     name: Continuous Integration
