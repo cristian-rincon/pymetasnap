@@ -7,6 +7,8 @@ on:
     branches: [main]
     paths-ignore: [CHANGELOG.md, poetry.lock, pyproject.toml]
   workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"   # <=== Change this value
 jobs:
   build:
     name: Continuous Integration
